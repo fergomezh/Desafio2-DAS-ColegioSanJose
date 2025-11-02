@@ -21,7 +21,7 @@ namespace ColegioSanJose.Controllers
         // GET: Alumno
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Alumnos.ToListAsync());
+            return View(await _context.Alumno.ToListAsync());
         }
 
         // GET: Alumno/Details/5
@@ -32,7 +32,7 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
-            var alumno = await _context.Alumnos
+            var alumno = await _context.Alumno
                 .FirstOrDefaultAsync(m => m.AlumnoId == id);
             if (alumno == null)
             {
@@ -72,7 +72,7 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
-            var alumno = await _context.Alumnos.FindAsync(id);
+            var alumno = await _context.Alumno.FindAsync(id);
             if (alumno == null)
             {
                 return NotFound();
@@ -123,7 +123,7 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
-            var alumno = await _context.Alumnos
+            var alumno = await _context.Alumno
                 .FirstOrDefaultAsync(m => m.AlumnoId == id);
             if (alumno == null)
             {
@@ -138,10 +138,10 @@ namespace ColegioSanJose.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var alumno = await _context.Alumnos.FindAsync(id);
+            var alumno = await _context.Alumno.FindAsync(id);
             if (alumno != null)
             {
-                _context.Alumnos.Remove(alumno);
+                _context.Alumno.Remove(alumno);
             }
 
             await _context.SaveChangesAsync();
@@ -150,7 +150,7 @@ namespace ColegioSanJose.Controllers
 
         private bool AlumnoExists(int id)
         {
-            return _context.Alumnos.Any(e => e.AlumnoId == id);
+            return _context.Alumno.Any(e => e.AlumnoId == id);
         }
     }
 }

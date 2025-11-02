@@ -15,21 +15,20 @@ public partial class ColegioSanJoseContext : DbContext
     {
     }
 
-    public virtual DbSet<Alumno> Alumnos { get; set; }
+    public virtual DbSet<Alumno> Alumno { get; set; }
 
-    public virtual DbSet<Expediente> Expedientes { get; set; }
+    public virtual DbSet<Expediente> Expediente { get; set; }
 
     public virtual DbSet<Materia> Materia { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=LEGION-FG\\MSSQLSERVER01; Database=ColegioSanJose; TrustServerCertificate=True; Trusted_Connection=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Alumno>(entity =>
         {
-            entity.HasKey(e => e.AlumnoId).HasName("PK__Alumno__90A6AA1373DF24AD");
+            entity.HasKey(e => e.AlumnoId).HasName("PK__Alumno__90A6AA13253B0BAD");
 
             entity.ToTable("Alumno");
 
@@ -46,37 +45,34 @@ public partial class ColegioSanJoseContext : DbContext
 
         modelBuilder.Entity<Expediente>(entity =>
         {
-            entity.HasKey(e => e.ExpedienteId).HasName("PK__Expedien__EBC60A367E62E507");
+            entity.HasKey(e => e.ExpedienteId).HasName("PK__Expedien__EBC60A36EC23AB0F");
 
             entity.ToTable("Expediente");
 
             entity.Property(e => e.NotaFinal).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.Observaciones)
-                .HasMaxLength(500)
-                .IsUnicode(false);
 
             entity.HasOne(d => d.Alumno).WithMany(p => p.Expedientes)
                 .HasForeignKey(d => d.AlumnoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Expedient__Alumn__3D5E1FD2");
+                .HasConstraintName("FK__Expedient__Alumn__3C69FB99");
 
             entity.HasOne(d => d.Materia).WithMany(p => p.Expedientes)
                 .HasForeignKey(d => d.MateriaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Expedient__Mater__3E52440B");
+                .HasConstraintName("FK__Expedient__Mater__3D5E1FD2");
         });
 
         modelBuilder.Entity<Materia>(entity =>
         {
-            entity.HasKey(e => e.MateriaId).HasName("PK__Materia__0D019DE1C3753E00");
+            entity.HasKey(e => e.MateriaId).HasName("PK__Materia__0D019DE1E810DF0A");
 
-            entity.HasIndex(e => e.NombreMateria, "UQ__Materia__5A6D7C03BB7376A6").IsUnique();
+            entity.HasIndex(e => e.NombreMateria, "UQ__Materia__5A6D7C03B3B23E0A").IsUnique();
 
             entity.Property(e => e.Docente)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.NombreMateria)
-                .HasMaxLength(10)
+                .HasMaxLength(50)
                 .IsUnicode(false);
         });
 

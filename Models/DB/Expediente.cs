@@ -13,8 +13,6 @@ public partial class Expediente
 
     public decimal NotaFinal { get; set; }
 
-    public string? Observaciones { get; set; }
-
     public virtual Alumno Alumno { get; set; } = null!;
 
     public virtual Materia Materia { get; set; } = null!;

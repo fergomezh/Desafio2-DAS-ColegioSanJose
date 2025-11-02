@@ -1,45 +1,37 @@
 ﻿@model ColegioSanJose.Models.DB.Materia
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Editar Materia";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Editar Materia</h2>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Edit</title>
-</head>
-<body>
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="MateriaId" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-<h4>Materia</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MateriaId" />
-            <div class="form-group">
-                <label asp-for="NombreMateria" class="control-label"></label>
-                <input asp-for="NombreMateria" class="form-control" />
-                <span asp-validation-for="NombreMateria" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Docente" class="control-label"></label>
-                <input asp-for="Docente" class="form-control" />
-                <span asp-validation-for="Docente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label asp-for="NombreMateria" class="form-label">Nombre de la Materia</label>
+                    <input asp-for="NombreMateria" class="form-control" />
+                    <span asp-validation-for="NombreMateria" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Docente" class="form-label">Docente Asignado</label>
+                    <input asp-for="Docente" class="form-control" />
+                    <span asp-validation-for="Docente" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-</body>
-</html>

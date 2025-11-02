@@ -21,7 +21,7 @@ namespace ColegioSanJose.Controllers
         // GET: Expediente
         public async Task<IActionResult> Index()
         {
-            var colegioSanJoseContext = _context.Expedientes.Include(e => e.Alumno).Include(e => e.Materia);
+            var colegioSanJoseContext = _context.Expediente.Include(e => e.Alumno).Include(e => e.Materia);
             return View(await colegioSanJoseContext.ToListAsync());
         }
 
@@ -33,7 +33,7 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
-            var expediente = await _context.Expedientes
+            var expediente = await _context.Expediente
                 .Include(e => e.Alumno)
                 .Include(e => e.Materia)
                 .FirstOrDefaultAsync(m => m.ExpedienteId == id);
@@ -48,26 +48,37 @@ namespace ColegioSanJose.Controllers
         // GET: Expediente/Create
         public IActionResult Create()
         {
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "AlumnoId");
-            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "MateriaId");
+            ViewBag.AlumnoId = new SelectList(_context.Alumno, "AlumnoId", "Nombre");
+            ViewBag.MateriaId = new SelectList(_context.Materia, "MateriaId", "NombreMateria");
             return View();
         }
 
-        // POST: Expediente/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
+        public async Task<IActionResult> Create([Bind("AlumnoId,MateriaId,NotaFinal")] Expediente expediente)
         {
+            // Remover validaciones de las propiedades de navegación si existen
+            ModelState.Remove("Alumno");
+            ModelState.Remove("Materia");
+
             if (ModelState.IsValid)
             {
                 _context.Add(expediente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "AlumnoId", expediente.AlumnoId);
-            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "MateriaId", expediente.MateriaId);
+
+            // Si hay errores, mostrarlos en consola para debug
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    System.Diagnostics.Debug.WriteLine(error.ErrorMessage);
+                }
+            }
+
+            ViewBag.AlumnoId = new SelectList(_context.Alumno, "AlumnoId", "Nombre", expediente.AlumnoId);
+            ViewBag.MateriaId = new SelectList(_context.Materia, "MateriaId", "NombreMateria", expediente.MateriaId);
             return View(expediente);
         }
 
@@ -79,27 +90,29 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
-            var expediente = await _context.Expedientes.FindAsync(id);
+            var expediente = await _context.Expediente.FindAsync(id);
             if (expediente == null)
             {
                 return NotFound();
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "AlumnoId", expediente.AlumnoId);
-            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "MateriaId", expediente.MateriaId);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "AlumnoId", "Nombre", expediente.AlumnoId);
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "NombreMateria", expediente.MateriaId);
             return View(expediente);
         }
 
         // POST: Expediente/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
+        public async Task<IActionResult> Edit(int id, [Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal")] Expediente expediente)
         {
             if (id != expediente.ExpedienteId)
             {
                 return NotFound();
             }
+
+            // Remover validaciones de las propiedades de navegación
+            ModelState.Remove("Alumno");
+            ModelState.Remove("Materia");
 
             if (ModelState.IsValid)
             {
@@ -121,8 +134,8 @@ namespace ColegioSanJose.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "AlumnoId", "AlumnoId", expediente.AlumnoId);
-            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "MateriaId", expediente.MateriaId);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "AlumnoId", "Nombre", expediente.AlumnoId);
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "NombreMateria", expediente.MateriaId);
             return View(expediente);
         }
 
@@ -134,7 +147,7 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
-            var expediente = await _context.Expedientes
+            var expediente = await _context.Expediente
                 .Include(e => e.Alumno)
                 .Include(e => e.Materia)
                 .FirstOrDefaultAsync(m => m.ExpedienteId == id);
@@ -151,10 +164,10 @@ namespace ColegioSanJose.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var expediente = await _context.Expedientes.FindAsync(id);
+            var expediente = await _context.Expediente.FindAsync(id);
             if (expediente != null)
             {
-                _context.Expedientes.Remove(expediente);
+                _context.Expediente.Remove(expediente);
             }
 
             await _context.SaveChangesAsync();
@@ -163,7 +176,7 @@ namespace ColegioSanJose.Controllers
 
         private bool ExpedienteExists(int id)
         {
-            return _context.Expedientes.Any(e => e.ExpedienteId == id);
+            return _context.Expediente.Any(e => e.ExpedienteId == id);
         }
     }
 }

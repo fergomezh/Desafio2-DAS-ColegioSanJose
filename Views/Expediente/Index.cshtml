@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ColegioSanJose.Models.DB.Expediente>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NotaFinal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Observaciones)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Alumno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Materia)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotaFinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Observaciones)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Alumno.AlumnoId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Materia.MateriaId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ExpedienteId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ExpedienteId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ExpedienteId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

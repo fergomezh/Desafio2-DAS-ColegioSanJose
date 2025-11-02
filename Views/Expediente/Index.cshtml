@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ColegioSanJose.Models.DB.Expediente>
+﻿@model IEnumerable<ColegioSanJose.Models.ViewModels.ExpedienteViewModel>
 
 @{
     ViewData["Title"] = "Listado de Expedientes";
@@ -14,9 +14,10 @@
     <table class="table table-bordered table-striped table-hover">
         <thead class="table-dark">
             <tr>
-                <th>Nota Final</th>
                 <th>Alumno</th>
                 <th>Materia</th>
+                <th>Nota Final</th>
+                <th>Observaciones</th>
                 <th class="text-center">Acciones</th>
             </tr>
         </thead>
@@ -24,9 +25,19 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.NotaFinal)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Alumno.Nombre)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Materia.NombreMateria)</td>
+                    <td>@item.NombreCompleto</td>
+                    <td>@item.NombreMateria</td>
+                    <td>@item.NotaFinal</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.Observaciones))
+                        {
+                            @item.Observaciones
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin observaciones</span>
+                        }
+                    </td>
                     <td class="text-center">
                         <a asp-action="Edit" asp-route-id="@item.ExpedienteId" class="btn btn-sm btn-primary me-1">Editar</a>
                         <a asp-action="Details" asp-route-id="@item.ExpedienteId" class="btn btn-sm btn-info text-white me-1">Detalles</a>

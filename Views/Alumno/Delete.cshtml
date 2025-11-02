@@ -30,8 +30,18 @@
                 </div>
             </div>
 
+            @if (Model.Expedientes != null && Model.Expedientes.Any())
+            {
+                <div class="alert alert-warning mt-3">
+                    <strong>Atención:</strong> Este alumno tiene <strong>@Model.Expedientes.Count()</strong> expedientes asociados.
+                    <br />
+                    Si confirmas la eliminación, también se eliminarán todos sus expedientes.
+                </div>
+            }
+
             <form asp-action="Delete" method="post" class="mt-4">
                 <input type="hidden" asp-for="AlumnoId" />
+                <input type="hidden" name="eliminarConExpedientes" value="true" />
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-danger">Eliminar</button>

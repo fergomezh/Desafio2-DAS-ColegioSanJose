@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ColegioSanJose.Models.DB;
+using ColegioSanJose.Models.ViewModels;
 
 namespace ColegioSanJose.Controllers
 {
@@ -21,8 +22,20 @@ namespace ColegioSanJose.Controllers
         // GET: Expediente
         public async Task<IActionResult> Index()
         {
-            var colegioSanJoseContext = _context.Expediente.Include(e => e.Alumno).Include(e => e.Materia);
-            return View(await colegioSanJoseContext.ToListAsync());
+            var expedientes = await _context.Expediente
+                .Include(e => e.Alumno)
+                .Include(e => e.Materia)
+                .Select(e => new ExpedienteViewModel
+                {
+                    ExpedienteId = e.ExpedienteId,
+                    NombreCompleto = e.Alumno.Nombre + " " + e.Alumno.Apellido,
+                    NombreMateria = e.Materia.NombreMateria,
+                    NotaFinal = (double)e.NotaFinal,
+                    Observaciones = e.Observaciones
+                })
+                .ToListAsync();
+
+            return View(expedientes);
         }
 
         // GET: Expediente/Details/5
@@ -177,6 +190,25 @@ namespace ColegioSanJose.Controllers
         private bool ExpedienteExists(int id)
         {
             return _context.Expediente.Any(e => e.ExpedienteId == id);
+        }
+
+        public async Task<IActionResult> PromedioPorAlumno()
+        {
+            var promedios = await _context.Expediente
+                .Include(e => e.Alumno)
+                .GroupBy(e => new { e.AlumnoId, e.Alumno.Nombre, e.Alumno.Apellido })
+                .Select(g => new PromedioAlumnoViewModel
+                {
+                    AlumnoId = g.Key.AlumnoId,
+                    NombreCompleto = g.Key.Nombre + " " + g.Key.Apellido,
+                    Promedio = (double)g.Average(e => e.NotaFinal)
+                })
+                .ToListAsync();
+
+            ViewBag.Labels = promedios.Select(p => p.NombreCompleto).ToArray();
+            ViewBag.Data = promedios.Select(p => p.Promedio).ToArray();
+
+            return View(promedios);
         }
     }
 }

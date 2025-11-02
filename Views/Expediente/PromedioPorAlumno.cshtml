@@ -1,0 +1,72 @@
+﻿@using System.Text.Json
+@model IEnumerable<ColegioSanJose.Models.ViewModels.PromedioAlumnoViewModel>
+
+@{
+    ViewData["Title"] = "Promedio por Alumno";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var labels = ViewBag.Labels as string[];
+    var data = ViewBag.Data as double[];
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Promedio de Notas por Alumno</h2>
+
+    <!-- Tabla de promedios -->
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Alumno</th>
+                <th>Promedio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NombreCompleto</td>
+                    <td>@item.Promedio.ToString("F2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Grafica con Chart.js -->
+    <canvas id="promedioChart" width="400" height="200"></canvas>
+
+    <a asp-action="Index" class="btn btn-secondary mt-4">Volver</a>
+</div>
+
+@section Scripts {
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('promedioChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(JsonSerializer.Serialize(labels)),
+                    datasets: [{
+                        label: 'Promedio de notas',
+                        data: @Html.Raw(JsonSerializer.Serialize(data)),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

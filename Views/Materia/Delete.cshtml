@@ -10,23 +10,31 @@
         <div class="col-md-8">
             <h2 class="mb-4 text-danger">¿Estás seguro que deseas eliminar esta materia?</h2>
 
-            <div class="card shadow-sm">
+            <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Materia</h4>
                     <hr />
                     <dl class="row">
-                        <dt class="col-sm-4">Nombre de la Materia</dt>
+                        <dt class="col-sm-4">Nombre</dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.NombreMateria)</dd>
 
-                        <dt class="col-sm-4">Docente Asignado</dt>
+                        <dt class="col-sm-4">Descripción</dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.Docente)</dd>
                     </dl>
                 </div>
             </div>
 
+            @* Advertencia si la materia tiene expedientes asociados *@            {
+                <div class="alert alert-warning mt-3">
+                    <strong>Atención:</strong> Esta materia tiene <strong>@Model.Expedientes.Count()</strong> expedientes asociados.
+                    <br />
+                    Si confirmas la eliminación, también se eliminarán todos sus expedientes.
+                </div>
+            }
+
             <form asp-action="Delete" method="post" class="mt-4">
-                @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="MateriaId" />
+                <input type="hidden" name="eliminarConExpedientes" value="true" />
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-danger">Eliminar</button>

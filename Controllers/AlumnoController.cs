@@ -81,8 +81,6 @@ namespace ColegioSanJose.Controllers
         }
 
         // POST: Alumno/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AlumnoId,Nombre,Apellido,FechaNacimiento,Grado")] Alumno alumno)
@@ -116,6 +114,7 @@ namespace ColegioSanJose.Controllers
         }
 
         // GET: Alumno/Delete/5
+        // GET: Alumno/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,7 +123,9 @@ namespace ColegioSanJose.Controllers
             }
 
             var alumno = await _context.Alumno
+                .Include(a => a.Expedientes)
                 .FirstOrDefaultAsync(m => m.AlumnoId == id);
+
             if (alumno == null)
             {
                 return NotFound();
@@ -136,15 +137,34 @@ namespace ColegioSanJose.Controllers
         // POST: Alumno/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, bool eliminarConExpedientes = false)
         {
-            var alumno = await _context.Alumno.FindAsync(id);
-            if (alumno != null)
+            var alumno = await _context.Alumno
+                .Include(a => a.Expedientes)
+                .FirstOrDefaultAsync(a => a.AlumnoId == id);
+
+            if (alumno == null)
             {
-                _context.Alumno.Remove(alumno);
+                return NotFound();
             }
 
+            if (alumno.Expedientes.Any() && !eliminarConExpedientes)
+            {
+                // Redirige a una vista de confirmación especial
+                TempData["ConfirmDeleteWithExpedientes"] = "El alumno tiene expedientes asociados. ¿Desea eliminarlos también?";
+                return RedirectToAction("Delete", new { id });
+            }
+
+            // Si el usuario confirmó, eliminamos expedientes y alumno
+            if (alumno.Expedientes.Any())
+            {
+                _context.Expediente.RemoveRange(alumno.Expedientes);
+            }
+
+            _context.Alumno.Remove(alumno);
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Alumno y expedientes eliminados correctamente.";
             return RedirectToAction(nameof(Index));
         }
 

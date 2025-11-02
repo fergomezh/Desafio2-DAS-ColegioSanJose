@@ -81,8 +81,6 @@ namespace ColegioSanJose.Controllers
         }
 
         // POST: Materia/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MateriaId,NombreMateria,Docente")] Materia materia)
@@ -116,6 +114,7 @@ namespace ColegioSanJose.Controllers
         }
 
         // GET: Materia/Delete/5
+        // GET: Materia/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,7 +123,9 @@ namespace ColegioSanJose.Controllers
             }
 
             var materia = await _context.Materia
+                .Include(m => m.Expedientes)
                 .FirstOrDefaultAsync(m => m.MateriaId == id);
+
             if (materia == null)
             {
                 return NotFound();
@@ -136,15 +137,32 @@ namespace ColegioSanJose.Controllers
         // POST: Materia/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, bool eliminarConExpedientes = false)
         {
-            var materia = await _context.Materia.FindAsync(id);
-            if (materia != null)
+            var materia = await _context.Materia
+                .Include(m => m.Expedientes)
+                .FirstOrDefaultAsync(m => m.MateriaId == id);
+
+            if (materia == null)
             {
-                _context.Materia.Remove(materia);
+                return NotFound();
             }
 
+            if (materia.Expedientes.Any() && !eliminarConExpedientes)
+            {
+                TempData["ErrorMessage"] = "La materia tiene expedientes asociados. Confirma si deseas eliminarlos también.";
+                return RedirectToAction("Delete", new { id });
+            }
+
+            if (materia.Expedientes.Any())
+            {
+                _context.Expediente.RemoveRange(materia.Expedientes);
+            }
+
+            _context.Materia.Remove(materia);
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Materia y expedientes eliminados correctamente.";
             return RedirectToAction(nameof(Index));
         }
 

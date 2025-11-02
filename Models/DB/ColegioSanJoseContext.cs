@@ -22,7 +22,7 @@ public partial class ColegioSanJoseContext : DbContext
     public virtual DbSet<Materia> Materia { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=LEGION-FG\\MSSQLSERVER01; Database=ColegioSanJose; TrustServerCertificate=True; Trusted_Connection=True;");
+        => optionsBuilder.UseSqlServer("Server=LEGION-FG\\MSSQLSERVER01;Database=ColegioSanJose;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,6 +50,9 @@ public partial class ColegioSanJoseContext : DbContext
             entity.ToTable("Expediente");
 
             entity.Property(e => e.NotaFinal).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.Observaciones)
+                .HasMaxLength(500)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Alumno).WithMany(p => p.Expedientes)
                 .HasForeignKey(d => d.AlumnoId)

@@ -24,13 +24,11 @@
                 </div>
             </div>
 
-            @* Advertencia si la materia tiene expedientes asociados *@            {
                 <div class="alert alert-warning mt-3">
                     <strong>Atención:</strong> Esta materia tiene <strong>@Model.Expedientes.Count()</strong> expedientes asociados.
                     <br />
                     Si confirmas la eliminación, también se eliminarán todos sus expedientes.
                 </div>
-            }
 
             <form asp-action="Delete" method="post" class="mt-4">
                 <input type="hidden" asp-for="MateriaId" />

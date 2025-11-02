@@ -10,25 +10,30 @@
         <div class="col-md-8">
             <h2 class="mb-4 text-danger">¿Estás seguro que deseas eliminar este expediente?</h2>
 
-            <div class="card shadow-sm">
+            <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Expediente</h4>
                     <hr />
                     <dl class="row">
-                        <dt class="col-sm-4">Nota Final</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.NotaFinal)</dd>
-
                         <dt class="col-sm-4">Alumno</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Alumno.Nombre)</dd>
+                        <dd class="col-sm-8">@Model.Alumno.Nombre @Model.Alumno.Apellido</dd>
 
                         <dt class="col-sm-4">Materia</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Materia.NombreMateria)</dd>
+                        <dd class="col-sm-8">@Model.Materia.NombreMateria</dd>
+
+                        <dt class="col-sm-4">Nota Final</dt>
+                        <dd class="col-sm-8">@Model.NotaFinal</dd>
+
+                        @if (!string.IsNullOrEmpty(Model.Observaciones))
+                        {
+                            <dt class="col-sm-4">Observaciones</dt>
+                            <dd class="col-sm-8">@Model.Observaciones</dd>
+                        }
                     </dl>
                 </div>
             </div>
 
             <form asp-action="Delete" method="post" class="mt-4">
-                @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="ExpedienteId" />
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>

@@ -50,6 +50,7 @@ namespace ColegioSanJose.Controllers
                 .Include(e => e.Alumno)
                 .Include(e => e.Materia)
                 .FirstOrDefaultAsync(m => m.ExpedienteId == id);
+
             if (expediente == null)
             {
                 return NotFound();
@@ -61,14 +62,22 @@ namespace ColegioSanJose.Controllers
         // GET: Expediente/Create
         public IActionResult Create()
         {
-            ViewBag.AlumnoId = new SelectList(_context.Alumno, "AlumnoId", "Nombre");
+            ViewBag.AlumnoId = _context.Alumno
+                .Select(a => new SelectListItem
+                {
+                    Value = a.AlumnoId.ToString(),
+                    Text = a.Nombre + " " + a.Apellido // Para enviar el nombre completo
+                })
+                .ToList();
+
             ViewBag.MateriaId = new SelectList(_context.Materia, "MateriaId", "NombreMateria");
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AlumnoId,MateriaId,NotaFinal")] Expediente expediente)
+        public async Task<IActionResult> Create([Bind("AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
         {
             // Remover validaciones de las propiedades de navegación si existen
             ModelState.Remove("Alumno");
@@ -108,22 +117,31 @@ namespace ColegioSanJose.Controllers
             {
                 return NotFound();
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "AlumnoId", "Nombre", expediente.AlumnoId);
-            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "NombreMateria", expediente.MateriaId);
+
+            ViewBag.AlumnoId = _context.Alumno
+                .Select(a => new SelectListItem
+                {
+                    Value = a.AlumnoId.ToString(),
+                    Text = a.Nombre + " " + a.Apellido
+                })
+                .ToList();
+
+            ViewBag.MateriaId = new SelectList(_context.Materia, "MateriaId", "NombreMateria", expediente.MateriaId);
+
             return View(expediente);
         }
 
         // POST: Expediente/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal")] Expediente expediente)
+        public async Task<IActionResult> Edit(int id, [Bind("ExpedienteId,AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
         {
             if (id != expediente.ExpedienteId)
             {
                 return NotFound();
             }
 
-            // Remover validaciones de las propiedades de navegación
+            // Remover validaciones de las propiedades de navegacion
             ModelState.Remove("Alumno");
             ModelState.Remove("Materia");
 
@@ -164,6 +182,7 @@ namespace ColegioSanJose.Controllers
                 .Include(e => e.Alumno)
                 .Include(e => e.Materia)
                 .FirstOrDefaultAsync(m => m.ExpedienteId == id);
+
             if (expediente == null)
             {
                 return NotFound();

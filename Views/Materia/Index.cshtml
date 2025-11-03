@@ -6,32 +6,60 @@
 }
 
 <div class="container mt-5">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Listado de Materias</h2>
-        <a asp-action="Create" class="btn btn-success">Agregar Materia</a>
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-journal-bookmark-fill me-2"></i> Listado de Materias
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Agregar Materia
+        </a>
     </div>
 
-    <table class="table table-bordered table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Nombre de la Materia</th>
-                <th>Docente Asignado</th>
-                <th class="text-center">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.NombreMateria)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Docente)</td>
-                    <td class="text-center">
-                        <a asp-action="Edit" asp-route-id="@item.MateriaId" class="btn btn-sm btn-primary me-1">Editar</a>
-                        <a asp-action="Details" asp-route-id="@item.MateriaId" class="btn btn-sm btn-info text-white me-1">Detalles</a>
-                        <a asp-action="Delete" asp-route-id="@item.MateriaId" class="btn btn-sm btn-danger">Eliminar</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            No hay materias registradas actualmente.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th><i class="bi bi-book me-1"></i> Nombre de la Materia</th>
+                            <th><i class="bi bi-person-badge-fill me-1"></i> Docente Asignado</th>
+                            <th class="text-center"><i class="bi bi-gear-fill me-1"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.NombreMateria</td>
+                                <td>@item.Docente</td>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.MateriaId"
+                                       class="btn btn-sm btn-warning me-1" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.MateriaId"
+                                       class="btn btn-sm btn-info text-white me-1" title="Detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.MateriaId"
+                                       class="btn btn-sm btn-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
 </div>

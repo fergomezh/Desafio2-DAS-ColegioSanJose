@@ -8,36 +8,57 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2 class="mb-4 text-danger">¿Estás seguro que deseas eliminar esta materia?</h2>
 
-            <div class="card">
+            <div class="d-flex align-items-center mb-4">
+                <i class="bi bi-exclamation-triangle-fill text-danger display-6 me-2"></i>
+                <h2 class="fw-bold text-danger mb-0">Confirmar Eliminación</h2>
+            </div>
+
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white fw-semibold">
+                    <i class="bi bi-journal-x me-1"></i> Materia a eliminar
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Materia</h4>
-                    <hr />
-                    <dl class="row">
-                        <dt class="col-sm-4">Nombre</dt>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="bi bi-book me-1"></i> Nombre de la Materia
+                        </dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.NombreMateria)</dd>
 
-                        <dt class="col-sm-4">Descripción</dt>
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="bi bi-person-badge-fill me-1"></i> Docente Asignado
+                        </dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.Docente)</dd>
                     </dl>
                 </div>
             </div>
 
+            <!-- Advertencia si tiene expedientes -->
+            @if (Model.Expedientes != null && Model.Expedientes.Any())
+            {
                 <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
                     <strong>Atención:</strong> Esta materia tiene <strong>@Model.Expedientes.Count()</strong> expedientes asociados.
                     <br />
                     Si confirmas la eliminación, también se eliminarán todos sus expedientes.
                 </div>
+            }
 
+            <!-- Formulario de confirmación -->
             <form asp-action="Delete" method="post" class="mt-4">
                 <input type="hidden" asp-for="MateriaId" />
                 <input type="hidden" name="eliminarConExpedientes" value="true" />
+
                 <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash-fill me-1"></i> Eliminar Materia
+                    </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>

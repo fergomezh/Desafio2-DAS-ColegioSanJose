@@ -30,7 +30,7 @@ namespace ColegioSanJose.Controllers
                     ExpedienteId = e.ExpedienteId,
                     NombreCompleto = e.Alumno.Nombre + " " + e.Alumno.Apellido,
                     NombreMateria = e.Materia.NombreMateria,
-                    NotaFinal = (double)e.NotaFinal,
+                    NotaFinal = e.NotaFinal,
                     Observaciones = e.Observaciones
                 })
                 .ToListAsync();
@@ -79,24 +79,23 @@ namespace ColegioSanJose.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AlumnoId,MateriaId,NotaFinal,Observaciones")] Expediente expediente)
         {
-            // Remover validaciones de las propiedades de navegación si existen
             ModelState.Remove("Alumno");
             ModelState.Remove("Materia");
+
+            // Validacion para evitar duplicados
+            bool existe = await _context.Expediente
+                .AnyAsync(e => e.AlumnoId == expediente.AlumnoId && e.MateriaId == expediente.MateriaId);
+
+            if (existe)
+            {
+                ModelState.AddModelError("", "Este alumno ya tiene un expediente registrado para esta materia.");
+            }
 
             if (ModelState.IsValid)
             {
                 _context.Add(expediente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-
-            // Si hay errores, mostrarlos en consola para debug
-            foreach (var modelState in ModelState.Values)
-            {
-                foreach (var error in modelState.Errors)
-                {
-                    System.Diagnostics.Debug.WriteLine(error.ErrorMessage);
-                }
             }
 
             ViewBag.AlumnoId = new SelectList(_context.Alumno, "AlumnoId", "Nombre", expediente.AlumnoId);
@@ -118,6 +117,7 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
+            // Poblar combos
             ViewBag.AlumnoId = _context.Alumno
                 .Select(a => new SelectListItem
                 {
@@ -141,9 +141,20 @@ namespace ColegioSanJose.Controllers
                 return NotFound();
             }
 
-            // Remover validaciones de las propiedades de navegacion
+            // Remover validaciones de navegación
             ModelState.Remove("Alumno");
             ModelState.Remove("Materia");
+
+            //  Validación para evitar duplicados de Alumno + Materia
+            bool existe = await _context.Expediente
+                .AnyAsync(e => e.AlumnoId == expediente.AlumnoId
+                            && e.MateriaId == expediente.MateriaId
+                            && e.ExpedienteId != expediente.ExpedienteId);
+
+            if (existe)
+            {
+                ModelState.AddModelError("", "Este alumno ya tiene un expediente registrado para esta materia.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -151,10 +162,11 @@ namespace ColegioSanJose.Controllers
                 {
                     _context.Update(expediente);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExpedienteExists(expediente.ExpedienteId))
+                    if (!_context.Expediente.Any(e => e.ExpedienteId == expediente.ExpedienteId))
                     {
                         return NotFound();
                     }
@@ -163,10 +175,19 @@ namespace ColegioSanJose.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "AlumnoId", "Nombre", expediente.AlumnoId);
-            ViewData["MateriaId"] = new SelectList(_context.Materia, "MateriaId", "NombreMateria", expediente.MateriaId);
+
+            // Si hay error, volver a poblar combos
+            ViewBag.AlumnoId = _context.Alumno
+                .Select(a => new SelectListItem
+                {
+                    Value = a.AlumnoId.ToString(),
+                    Text = a.Nombre + " " + a.Apellido
+                })
+                .ToList();
+
+            ViewBag.MateriaId = new SelectList(_context.Materia, "MateriaId", "NombreMateria", expediente.MateriaId);
+
             return View(expediente);
         }
 

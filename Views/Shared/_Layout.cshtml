@@ -10,7 +10,7 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container">
@@ -52,10 +52,14 @@
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted">
-        <div class="container text-center py-3">
-            &copy; 2025 - Colegio San José |
-            <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none">Politica de Privacidad</a>
+    <footer class="border-top footer text-muted bg-dark text-white-50">
+        <div class="container text-center py-1">
+            <small>
+                &copy; 2025 - Colegio San José |
+                <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-white-50">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Política de Privacidad
+                </a>
+            </small>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

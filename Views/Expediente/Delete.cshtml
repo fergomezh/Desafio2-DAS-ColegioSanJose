@@ -8,25 +8,47 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2 class="mb-4 text-danger">¿Estás seguro que deseas eliminar este expediente?</h2>
 
-            <div class="card">
+            <div class="d-flex align-items-center mb-4">
+                <i class="bi bi-exclamation-triangle-fill text-danger display-6 me-2"></i>
+                <h2 class="fw-bold text-danger mb-0">Confirmar Eliminación</h2>
+            </div>
+
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white fw-semibold">
+                    <i class="bi bi-folder-x me-1"></i> Expediente a eliminar
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Expediente</h4>
-                    <hr />
-                    <dl class="row">
-                        <dt class="col-sm-4">Alumno</dt>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="bi bi-person-fill me-1"></i> Alumno
+                        </dt>
                         <dd class="col-sm-8">@Model.Alumno.Nombre @Model.Alumno.Apellido</dd>
 
-                        <dt class="col-sm-4">Materia</dt>
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="bi bi-journal-bookmark-fill me-1"></i> Materia
+                        </dt>
                         <dd class="col-sm-8">@Model.Materia.NombreMateria</dd>
 
-                        <dt class="col-sm-4">Nota Final</dt>
-                        <dd class="col-sm-8">@Model.NotaFinal</dd>
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="bi bi-bar-chart-fill me-1"></i> Nota Final
+                        </dt>
+                        <dd class="col-sm-8">
+                            @if (Model.NotaFinal >= 6)
+                            {
+                                <span class="badge bg-success">@Model.NotaFinal</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">@Model.NotaFinal</span>
+                            }
+                        </dd>
 
                         @if (!string.IsNullOrEmpty(Model.Observaciones))
                         {
-                            <dt class="col-sm-4">Observaciones</dt>
+                            <dt class="col-sm-4 fw-semibold">
+                                <i class="bi bi-chat-left-text-fill me-1"></i> Observaciones
+                            </dt>
                             <dd class="col-sm-8">@Model.Observaciones</dd>
                         }
                     </dl>
@@ -36,10 +58,15 @@
             <form asp-action="Delete" method="post" class="mt-4">
                 <input type="hidden" asp-for="ExpedienteId" />
                 <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash-fill me-1"></i> Eliminar Expediente
+                    </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>

@@ -4,15 +4,38 @@
 }
 
 <div class="container mt-5">
-    <h1 class="mb-4">@ViewData["Title"]</h1>
 
-    <p>
-        Esta página forma parte de un trabajo académico de la materia 
-        <strong>Desarrollo de Aplicaciones con Software Propietario DAS901 G01T (Virtual)</strong>.
-    </p>
+    <div class="d-flex align-items-center mb-4">
+        <i class="bi bi-shield-lock-fill text-primary display-6 me-2"></i>
+        <h1 class="fw-bold text-primary mb-0">@ViewData["Title"]</h1>
+    </div>
 
-    <p>
-        El contenido aquí mostrado tiene fines educativos y de demostración,
-        en el marco del proyecto del <em>Colegio San José</em>.
-    </p>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-secondary mb-3">
+                <i class="bi bi-info-circle-fill me-1"></i> Información General
+            </h5>
+            <p class="card-text">
+                Esta página forma parte de un trabajo académico de la materia
+                <strong>Desarrollo de Aplicaciones con Software Propietario DAS901 G01T (Virtual)</strong>.
+            </p>
+
+            <p class="card-text">
+                El contenido aquí mostrado tiene fines educativos y de demostración,
+                en el marco del proyecto del <em>Colegio San José</em>.
+            </p>
+
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-lightbulb-fill me-1"></i>
+                <strong>Nota:</strong> Esta política no representa un documento legal real,
+                sino un recurso académico para fines de práctica y presentación.
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Volver al Inicio
+        </a>
+    </div>
 </div>

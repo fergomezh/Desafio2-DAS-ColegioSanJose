@@ -49,8 +49,6 @@ namespace ColegioSanJose.Controllers
         }
 
         // POST: Alumno/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AlumnoId,Nombre,Apellido,FechaNacimiento,Grado")] Alumno alumno)
@@ -113,7 +111,6 @@ namespace ColegioSanJose.Controllers
             return View(alumno);
         }
 
-        // GET: Alumno/Delete/5
         // GET: Alumno/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

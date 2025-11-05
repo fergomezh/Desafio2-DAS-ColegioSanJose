@@ -49,8 +49,6 @@ namespace ColegioSanJose.Controllers
         }
 
         // POST: Materia/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Materia materia)
@@ -113,7 +111,6 @@ namespace ColegioSanJose.Controllers
             return View(materia);
         }
 
-        // GET: Materia/Delete/5
         // GET: Materia/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
